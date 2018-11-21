@@ -10,7 +10,8 @@ const mention = new MentionsServer({
 	getUsers: (usernames) => Meteor.users.find({ username: { $in: _.unique(usernames) } }, { fields: { _id: true, username: true, name: 1 } }).fetch(),
 	getUser: (userId) => RocketChat.models.Users.findOneById(userId),
 	getTotalChannelMembers: (rid) => RocketChat.models.Subscriptions.findByRoomId(rid).count(),
-	getChannels: (channels) => RocketChat.models.Rooms.find({ name: { $in: _.unique(channels) }, t: 'c'	}, { fields: { _id: 1, name: 1 } }).fetch(),
+	isUserSubscribed: (rid, userId) => RocketChat.models.Subscriptions.findOneByRoomIdAndUserId(rid, userId),
+	getChannels: (channels) => RocketChat.models.Rooms.find({ name: { $in: _.unique(channels) } }, { fields: { _id: 1, name: 1 } }).fetch(),
 	onMaxRoomMembersExceeded({ sender, rid }) {
 		// Get the language of the user for the error notification.
 		const { language } = this.getUser(sender._id);

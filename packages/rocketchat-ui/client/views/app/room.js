@@ -719,12 +719,22 @@ Template.room.events({
 			return;
 		}
 		const channel = $(e.currentTarget).data('channel');
+		const group = $(e.currentTarget).data('group');
 		if (channel != null) {
 			if (RocketChat.Layout.isEmbedded()) {
 				fireGlobalEvent('click-mention-link', { path: FlowRouter.path('channel', { name: channel }), channel });
 			}
 
 			FlowRouter.go('channel', { name: channel }, FlowRouter.current().queryParams);
+			return;
+		}
+
+		if (group != null) {
+			if (RocketChat.Layout.isEmbedded()) {
+				fireGlobalEvent('click-mention-link', { path: FlowRouter.path('group', { name: group }), group });
+			}
+
+			FlowRouter.go('group', { name: group }, FlowRouter.current().queryParams);
 			return;
 		}
 

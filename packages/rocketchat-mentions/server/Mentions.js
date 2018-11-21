@@ -12,6 +12,7 @@ export default class MentionsServer extends Mentions {
 		this.getUsers = args.getUsers;
 		this.getUser = args.getUser;
 		this.getTotalChannelMembers = args.getTotalChannelMembers;
+		this.isUserSubscribed = args.isUserSubscribed;
 		this.onMaxRoomMembersExceeded = args.onMaxRoomMembersExceeded || (() => {});
 	}
 	set getUsers(m) {
@@ -39,6 +40,9 @@ export default class MentionsServer extends Mentions {
 		return typeof this._messageMaxAll === 'function' ? this._messageMaxAll() : this._messageMaxAll;
 	}
 	getUsersByMentions({ msg, rid, u: sender }) {
+		// console.log(this.getTotalChannelMembers(rid));
+		// console.log(`Rid: ${rid}, UserID: ${Meteor.userId()}`);
+		// console.log(this.isUserSubscribed(rid, Meteor.userId()));
 		let mentions = this.getUserMentions(msg);
 		const mentionsAll = [];
 		const userMentions = [];
@@ -66,6 +70,14 @@ export default class MentionsServer extends Mentions {
 	execute(message) {
 		const mentionsAll = this.getUsersByMentions(message);
 		const channels = this.getChannelbyMentions(message);
+		for (const channel of channels) {
+			const isUserSubscribed = this.isUserSubscribed(channels[0]._id, Meteor.userId());
+
+			if (isUserSubscribed) {
+				channel.isUserSubscribed = true;
+			}
+		}
+
 
 		message.mentions = mentionsAll;
 		message.channels = channels;
